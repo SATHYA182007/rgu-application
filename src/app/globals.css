@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0B1F3A;
+  --color-blue-800: #1E4D8C;
+  --color-gold-500: #D4A017;
+  --color-bg-slate: #F8FAFC;
+  --color-card-white: #FFFFFF;
+  --color-surface-slate: #F1F5F9;
+  --color-border-slate: #E2E8F0;
+  --color-text-navy: #0F172A;
+  --color-text-slate: #64748B;
+  --color-success-green: #16A34A;
+  --color-warning-amber: #F59E0B;
+  --color-error-red: #DC2626;
+  
+  --radius-card: 18px;
+  --radius-element: 14px;
+}
+
+:root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Premium micro-interactions & utility styles */
+.premium-shadow {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 8px -1px rgba(15, 23, 42, 0.02);
+}
+
+.premium-shadow-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-shadow-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.08), 0 10px 15px -5px rgba(15, 23, 42, 0.03);
+}
+
+/* Input custom height and focus outline styling */
+.premium-input {
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+  padding: 0 18px;
+  font-size: 15px;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+select.premium-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 16px;
+  padding-right: 42px;
+}
+
+.premium-input:focus {
+  outline: none;
+  border-color: #1E4D8C;
+  box-shadow: 0 0 0 4px rgba(30, 77, 140, 0.1);
+}
+
+/* Premium Card Rounded Border style */
+.premium-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 24px;
+}
+
+/* Glassmorphism utility */
+.premium-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Floating labels custom logic helper */
+.floating-label-group {
+  position: relative;
+}
+
+.floating-label-group label {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #FFFFFF;
+  padding: 0 4px;
+  color: #64748B;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.floating-label-group input:focus ~ label,
+.floating-label-group input:not(:placeholder-shown) ~ label,
+.floating-label-group select:focus ~ label,
+.floating-label-group select.has-value ~ label,
+.floating-label-group select:not([value=""]) ~ label {
+  top: 0;
+  font-size: 12px;
+  color: #1E4D8C;
+}
+
+/* Gradient effects */
+.gradient-text-navy-blue {
+  background: linear-gradient(135deg, #0B1F3A 0%, #1E4D8C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-btn-navy {
+  background: linear-gradient(135deg, #0B1F3A 0%, #1E4D8C 100%);
+  color: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+.gradient-btn-navy:hover {
+  opacity: 0.95;
+  box-shadow: 0 4px 15px rgba(30, 77, 140, 0.25);
+}

@@ -1,0 +1,136 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ApplicationStatus {
+  DRAFT
+  SUBMITTED
+  VERIFIED
+  APPROVED
+  REJECTED
+}
+
+enum DocumentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String
+  role          Role          @default(STUDENT)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  application   Application?
+}
+
+model Application {
+  id                   String            @id // e.g. "RPET2026-000001"
+  userId               String            @unique
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status               ApplicationStatus @default(DRAFT)
+  progressPercent      Int               @default(0)
+  registrationDate     DateTime          @default(now())
+  
+  // Personal Details
+  firstName            String
+  lastName             String
+  dob                  String
+  gender               String
+  mobile               String
+  
+  // Academic Information
+  highestQualification String
+  percentageCgpa       String
+  schoolFaculty        String
+  researchDepartment   String
+  proposedResearchArea String
+  
+  // Identity Info
+  nationality          String
+  aadhaarId            String
+  category             String
+  
+  // Relations
+  documents            Document[]
+  slot                 BookedSlot?
+  mockTestResult       MockTestResult?
+  verificationNotes    String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+}
+
+model Document {
+  id            String          @id @default(uuid())
+  applicationId String
+  application   Application     @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  fieldName     String          // e.g. "passportPhoto", "aadhaarCard"
+  fileName      String
+  fileUrl       String
+  status        DocumentStatus  @default(PENDING)
+  feedback      String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model BookedSlot {
+  id            String      @id @default(uuid())
+  applicationId String      @unique
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  examDate      String
+  timeSlot      String
+  createdAt     DateTime    @default(now())
+}
+
+model MockTestResult {
+  id                    String      @id @default(uuid())
+  applicationId         String      @unique
+  application           Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  score                 Int
+  accuracy              Int
+  timeTaken             String
+  attemptDate           DateTime    @default(now())
+  researchScore         Int
+  logicalScore          Int
+  quantitativeScore     Int
+  englishScore          Int
+}
+
+model ExamSlot {
+  id             String                 @id @default(uuid())
+  examDate       String
+  startTime      String
+  endTime        String
+  totalSeats     Int
+  availableSeats Int
+  mode           String
+  status         String
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  bookings       CandidateSlotBooking[]
+}
+
+model CandidateSlotBooking {
+  id                String      @id @default(uuid())
+  candidateId       String
+  slotId            String
+  slot              ExamSlot    @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  bookingStatus     String
+  bookingDate       DateTime    @default(now())
+  bookingReference  String      // e.g. BOOK-2026-00124
+  rescheduleCount   Int         @default(0)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}

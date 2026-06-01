@@ -1,0 +1,231 @@
+Here's a complete breakdown of all **DOCUMENTS COLLECTED FROM THE USER** in this portal:
+
+---
+
+## 📄 Complete Document Collection by Nationality
+
+### 🇮🇳 India
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Aadhaar Card — **Front** | JPG / PNG / PDF | Max 2MB |
+| 2 | Aadhaar Card — **Back** | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇫🇷 France
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Carte Nationale d'Identité (CNI) | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇩🇪 Germany
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Personalausweis (German ID Card) | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇬🇧 United Kingdom
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | BRP / Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+| 2 | UK Visa / Student Visa | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇳🇱 Netherlands
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Dutch ID Card / Passport | JPG / PNG / PDF | Max 2MB |
+| 2 | Residence Permit (if applicable) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇪🇸 Spain
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | DNI / NIE Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇮🇹 Italy
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Carta d'Identità (Italian ID) | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇸🇪 Sweden
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Swedish ID Card / Passport | JPG / PNG / PDF | Max 2MB |
+| 2 | Residence Permit | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇨🇭 Switzerland
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Swiss Identity Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇯🇵 Japan
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | My Number Card / Residence Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇰🇷 South Korea
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Alien Registration Card (ARC) | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇸🇬 Singapore
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Singapore Pass / FIN Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇦🇪 United Arab Emirates
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Emirates ID Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇲🇾 Malaysia
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | MyKad / Malaysian ID Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇹🇭 Thailand
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Thai National ID / Passport | JPG / PNG / PDF | Max 2MB |
+| 2 | Thai Visa / Permit | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇱🇰 Sri Lanka
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Sri Lanka NIC Card | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+### 🇳🇵 Nepal
+| # | Document | Format | Size |
+|---|----------|--------|------|
+| 1 | Citizenship Certificate | JPG / PNG / PDF | Max 2MB |
+| 2 | Passport (Data Page) | JPG / PNG / PDF | Max 2MB |
+
+---
+
+## 📊 Document Type Classification
+
+### By Document Category
+| Category | Countries | Documents |
+|----------|-----------|-----------|
+| **National ID Cards** | India, France, Germany, Netherlands, Spain, Italy, Sweden, Switzerland, Japan, South Korea, Singapore, UAE, Malaysia, Thailand, Sri Lanka, Nepal | Aadhaar, CNI, Personalausweis, Dutch ID, DNI/NIE, Carta d'Identità, Swedish ID, Swiss ID, My Number, ARC, FIN Card, Emirates ID, MyKad, Thai ID, NIC, Citizenship Certificate |
+| **Passport** | All 17 countries | Data Page (bio page) |
+| **Visa / Permit** | UK, Netherlands, Sweden, Thailand | Student Visa, Residence Permit, Thai Visa |
+
+---
+
+### By Document Requirement Type
+| Type | Description | Countries |
+|------|------------|-----------|
+| **Mandatory Primary** | National ID always required | All 17 |
+| **Mandatory Secondary** | Always required along with primary | All 17 |
+| **Conditional Secondary** | "If applicable" label | Netherlands (Residence Permit) |
+
+---
+
+## 🗂️ Unique Document Types Across All Countries
+
+| # | Document Name | Countries That Submit It |
+|---|--------------|------------------------|
+| 1 | Aadhaar Card (Front + Back) | India only |
+| 2 | Passport (Data Page) | 14 countries |
+| 3 | Carte Nationale d'Identité | France |
+| 4 | Personalausweis | Germany |
+| 5 | BRP (Biometric Residence Permit) | UK |
+| 6 | UK / Student Visa | UK |
+| 7 | Dutch ID Card | Netherlands |
+| 8 | Residence Permit | Netherlands, Sweden |
+| 9 | DNI / NIE Card | Spain |
+| 10 | Carta d'Identità | Italy |
+| 11 | Swedish ID Card | Sweden |
+| 12 | Swiss Identity Card | Switzerland |
+| 13 | My Number / Residence Card | Japan |
+| 14 | Alien Registration Card (ARC) | South Korea |
+| 15 | Singapore Pass / FIN Card | Singapore |
+| 16 | Emirates ID Card | UAE |
+| 17 | MyKad | Malaysia |
+| 18 | Thai National ID | Thailand |
+| 19 | Thai Visa / Permit | Thailand |
+| 20 | Sri Lanka NIC Card | Sri Lanka |
+| 21 | Citizenship Certificate | Nepal |
+
+**Total Unique Document Types = 21**
+
+---
+
+## ⚙️ Technical Specs for All Uploads
+
+| Property | Value |
+|----------|-------|
+| Accepted Formats | `.jpg` `.jpeg` `.png` `.pdf` |
+| Maximum File Size | 2MB per file |
+| Upload Method | HTML file input (client-side) |
+| Upload Trigger | `onchange` event |
+| Validation | Presence check only (no size/format validation in code) |
+| Success Indicator | Zone border turns **green**, icon changes to ✅ |
+| Failure Indicator | Zone border turns **red** for 2.5 seconds |
+| File Name Display | Shown inside upload zone after selection |
+| Storage Variable | `uploadedFiles{}` object (key = doc ID, value = filename) |
+
+---
+
+## 🔄 Upload UX Behaviour
+
+| State | Visual Feedback |
+|-------|----------------|
+| **Default** | Dashed border, upload icon, label, sub-label shown |
+| **Hover** | Border turns gold, background slightly highlighted |
+| **File Selected** | Border turns solid green, icon → ✅, filename shown |
+| **Validation Failed** | Border turns red for 2.5 seconds, alert message shown |
+| **Missing on Submit** | Alert: *"Please upload: [document name] — it is required for your nationality"* |
+
+---
+
+## 📈 Total Document Collection Summary
+
+| Metric | Count |
+|--------|-------|
+| Total Countries Supported | 17 |
+| Documents per User | **2** (always exactly 2) |
+| Total Unique Document Types | **21** |
+| Total Possible Upload Slots | **34** (17 countries × 2 docs) |
+| Accepted File Formats | **4** (JPG, JPEG, PNG, PDF) |
+| Max Data per Upload | **2MB** |
+| Max Total Upload per User | **4MB** (2 files × 2MB) |
