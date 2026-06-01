@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, 
@@ -179,13 +180,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-40 premium-glass border-b border-border-slate/80 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-navy-950 flex items-center justify-center text-white font-extrabold text-lg shadow-md border border-white/10">
-              R
-            </div>
-            <div>
-              <h1 className="font-outfit font-bold text-lg leading-none tracking-tight text-navy-950">RATHINAM</h1>
-              <p className="text-[10px] tracking-[0.15em] font-medium text-gold-500 uppercase">Global University</p>
-            </div>
+            <Image src="/rgu-img.png" alt="RGU Logo" width={240} height={96} quality={100} className="object-contain h-12 w-auto" />
             <div className="h-6 w-[1px] bg-border-slate/80 mx-2" />
             <span className="font-outfit font-semibold text-xs tracking-wider bg-surface-slate text-blue-800 px-3 py-1.5 rounded-full border border-border-slate">
               RPET 2026
@@ -281,8 +276,8 @@ export default function LandingPage() {
               <div className="w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full border border-dashed border-border-slate flex items-center justify-center" />
               
               {/* Inner Circle Logo container */}
-              <div className="absolute w-20 h-20 rounded-2xl bg-navy-950 text-white flex items-center justify-center font-outfit font-extrabold text-3xl shadow-xl">
-                RGU
+              <div className="absolute">
+                <Image src="/rgu-img.png" alt="RGU Logo" width={180} height={180} quality={100} className="object-contain drop-shadow-xl" />
               </div>
 
               {/* Floating UI Elements */}
@@ -570,13 +565,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 border-b border-white/10 pb-12 mb-12">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white text-navy-950 flex items-center justify-center font-extrabold text-lg shadow-md">
-                R
-              </div>
-              <div>
-                <h4 className="font-outfit font-bold text-md leading-none text-white tracking-wide">RATHINAM</h4>
-                <p className="text-[9px] tracking-[0.15em] font-bold text-gold-500 uppercase mt-0.5">Global University</p>
-              </div>
+              <Image src="/rgu-img.png" alt="RGU Logo" width={240} height={96} quality={100} className="object-contain h-12 w-auto brightness-0 invert" />
             </div>
             <p className="text-white/60 text-[12.5px] leading-relaxed pt-2">
               Empowering innovators, academic scholars, and doctoral guides to synthesize high-impact societal discoveries.

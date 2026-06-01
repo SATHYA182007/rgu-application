@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
@@ -645,15 +646,21 @@ export default function RegistrationWizard() {
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-800/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Absolute Logo at the top-left corner of the screen page */}
-      <div className="absolute top-8 left-8 md:top-10 md:left-10 flex items-center gap-3 cursor-pointer z-30" onClick={() => router.push('/')}>
-        <div className="w-9 h-9 rounded-lg bg-navy-950 text-white font-extrabold flex items-center justify-center">
-          R
+      <div className="absolute top-8 left-8 md:top-10 md:left-10 flex items-center gap-4 z-30">
+        <div className="cursor-pointer" onClick={() => router.push('/')}>
+          <Image src="/rgu-img.png" alt="RGU Logo" width={240} height={96} quality={100} className="object-contain h-12 w-auto" />
         </div>
-        <div>
-          <p className="font-outfit font-black text-sm text-navy-950 leading-none">RGU RPET 2026</p>
-          <p className="text-[9px] font-semibold text-gold-500 tracking-wider">ADMISSIONS DESK</p>
-        </div>
+      </div>
+
+      {/* Back button — bottom-left corner */}
+      <div className="absolute bottom-8 left-8 md:bottom-10 md:left-10 z-30">
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border-slate bg-white text-navy-950 text-xs font-bold hover:bg-surface-slate hover:border-navy-950/30 transition-all shadow-sm"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Home
+        </button>
       </div>
 
       <div className="max-w-7xl w-full mx-auto grid md:grid-cols-12 gap-8 items-start">

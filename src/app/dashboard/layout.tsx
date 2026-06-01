@@ -17,6 +17,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import Image from 'next/image';
 import { usePortalState } from '../../hooks/usePortalState';
 import { toast } from 'sonner';
 
@@ -84,14 +85,8 @@ export default function StudentDashboardLayout({
         <div className="p-6 space-y-8">
           
           {/* Brand header */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-navy-950 text-white font-extrabold flex items-center justify-center shadow-md">
-              R
-            </div>
-            <div>
-              <h2 className="font-outfit font-black text-sm text-navy-950 leading-none">RGU RPET 2026</h2>
-              <p className="text-[9px] font-bold text-gold-500 tracking-wider">SCHOLAR PLATFORM</p>
-            </div>
+          <div className="flex items-center">
+            <Image src="/rgu-img.png" alt="RGU Logo" width={240} height={96} quality={100} className="object-contain h-12 w-auto" />
           </div>
 
           {/* Navigation link blocks */}
@@ -187,14 +182,8 @@ export default function StudentDashboardLayout({
           >
             <div className="space-y-8">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-navy-950 text-white font-extrabold flex items-center justify-center">
-                    R
-                  </div>
-                  <div>
-                    <h2 className="font-outfit font-black text-xs text-navy-950">RGU RPET</h2>
-                    <p className="text-[8px] font-bold text-gold-500">SCHOLAR</p>
-                  </div>
+                <div className="flex items-center">
+                   <Image src="/rgu-img.png" alt="RGU Logo" width={200} height={80} quality={100} className="object-contain h-10 w-auto" />
                 </div>
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
