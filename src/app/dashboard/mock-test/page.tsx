@@ -926,7 +926,7 @@ export default function MockTestPlatform() {
             </div>
 
             <div className="grid grid-cols-5 gap-2">
-              {MOCK_QUESTIONS.map((q, idx) => {
+              {activeTestQuestions.map((q, idx) => {
                 const isSelected = currentIdx === idx;
                 const isAnswered = answers[idx] !== undefined;
 
@@ -972,14 +972,21 @@ export default function MockTestPlatform() {
 
   // Render Diagnostic results
   if (testState === 'results') {
-    const res = activeUser.mockTestResults?.[activeTestId];
+    const res = activeUser.mockTestResults?.[activeTestId] ?? activeUser.mockTestResult;
+    if (!res) {
+      return (
+        <div className="p-6 text-center text-text-slate">
+          No mock test results available for this test.
+        </div>
+      );
+    }
     
     // Format Recharts data
     const chartData = [
-      { name: 'Research Apt.', Score: res.categoryScores.researchAptitude, Total: 5 },
-      { name: 'Logical Reas.', Score: res.categoryScores.logicalReasoning, Total: 5 },
-      { name: 'Quant. Apt.', Score: res.categoryScores.quantitativeAptitude, Total: 5 },
-      { name: 'English', Score: res.categoryScores.english, Total: 5 }
+      { name: 'Research Apt.', Score: res.categoryScores?.researchAptitude ?? 0, Total: 5 },
+      { name: 'Logical Reas.', Score: res.categoryScores?.logicalReasoning ?? 0, Total: 5 },
+      { name: 'Quant. Apt.', Score: res.categoryScores?.quantitativeAptitude ?? 0, Total: 5 },
+      { name: 'English', Score: res.categoryScores?.english ?? 0, Total: 5 }
     ];
 
     return (
@@ -1094,7 +1101,7 @@ export default function MockTestPlatform() {
             </div>
 
             <button
-              onClick={handleStartTest}
+                onClick={() => handleStartTest(activeTestId)}
               className="w-full text-center py-3 bg-navy-950 hover:bg-blue-800 text-white font-extrabold rounded-xl transition-all text-xs mt-6 shadow-sm"
             >
               Re-Attempt Practice Test
