@@ -57,11 +57,34 @@ const INITIAL_CANDIDATES: CandidateApplication[] = [
       bookingHistory: []
     },
     mockTestResult: {
-      score: 17,
-      accuracy: 85,
-      timeTaken: '45:12',
+      score: 18,
+      accuracy: 90,
+      timeTaken: '34:10',
       attemptDate: '2026-05-28',
-      categoryScores: { researchAptitude: 4, logicalReasoning: 5, quantitativeAptitude: 4, english: 4 }
+      categoryScores: { researchAptitude: 5, logicalReasoning: 5, quantitativeAptitude: 4, english: 4 }
+    },
+    mockTestResults: {
+      test1: {
+        score: 15,
+        accuracy: 75,
+        timeTaken: '38:20',
+        attemptDate: '2026-05-20',
+        categoryScores: { researchAptitude: 3, logicalReasoning: 4, quantitativeAptitude: 4, english: 4 }
+      },
+      test2: {
+        score: 17,
+        accuracy: 85,
+        timeTaken: '36:45',
+        attemptDate: '2026-05-24',
+        categoryScores: { researchAptitude: 4, logicalReasoning: 5, quantitativeAptitude: 4, english: 4 }
+      },
+      test3: {
+        score: 18,
+        accuracy: 90,
+        timeTaken: '34:10',
+        attemptDate: '2026-05-28',
+        categoryScores: { researchAptitude: 5, logicalReasoning: 5, quantitativeAptitude: 4, english: 4 }
+      }
     }
   },
   {
@@ -457,6 +480,7 @@ export function usePortalState() {
       otpVerified: activeUser?.otpVerified || false,
       bookedSlot: activeUser?.bookedSlot,
       mockTestResult: activeUser?.mockTestResult,
+      mockTestResults: activeUser?.mockTestResults,
       verificationNotes: activeUser?.verificationNotes
     };
 
@@ -535,12 +559,18 @@ export function usePortalState() {
   };
 
   // Mock test submission
-  const saveMockTestScore = (appId: string, result: MockTestResult) => {
+  const saveMockTestScore = (appId: string, result: MockTestResult, testId?: string) => {
     const match = candidates.find(c => c.id === appId);
     if (match) {
+      const activeTestKey = testId || 'test1';
+      const updatedResults = {
+        ...(match.mockTestResults || {}),
+        [activeTestKey]: result
+      };
       const updatedUser: CandidateApplication = {
         ...match,
-        mockTestResult: result
+        mockTestResult: result,
+        mockTestResults: updatedResults
       };
       saveActiveUserState(updatedUser);
 

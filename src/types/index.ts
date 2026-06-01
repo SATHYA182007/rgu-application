@@ -63,6 +63,7 @@ export interface CandidateApplication {
   otpVerified: boolean;
   bookedSlot?: CandidateSlotBookingInfo;
   mockTestResult?: MockTestResult;
+  mockTestResults?: Record<string, MockTestResult>;
   verificationNotes?: string;
 }
 
