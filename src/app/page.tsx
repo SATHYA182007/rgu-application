@@ -217,69 +217,57 @@ export default function LandingPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
-        <div className="grid md:grid-cols-12 gap-12 items-center">
+      <section className="relative max-w-5xl mx-auto px-6 pt-20 pb-20 md:pt-28 md:pb-24 text-center">
+        <div className="space-y-8 flex flex-col items-center">
           
-          <div className="md:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/10 text-gold-500 text-xs font-bold rounded-full border border-gold-500/20">
-              <Sparkles className="w-3.5 h-3.5" />
-              Doctoral Admission Open | Academic Session 2026-27
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl font-outfit font-extrabold tracking-tight text-navy-950 leading-[1.1]">
-              Research & PhD <br />
-              <span className="gradient-text-navy-blue">Entrance Test (RPET) 2026</span>
-            </h1>
-            
-            <p className="text-lg text-text-slate font-medium max-w-2xl leading-relaxed">
-              Begin your research journey at Rathinam Global University. Apply for admission into prestigious doctoral and research programmes through our comprehensive, merit-driven admission gateway.
-            </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/10 text-gold-500 text-xs font-bold rounded-full border border-gold-500/20">
+            <Sparkles className="w-3.5 h-3.5" />
+            Doctoral Admission Open | Academic Session 2026-27
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl font-outfit font-extrabold tracking-tight text-navy-950 leading-[1.1] max-w-4xl">
+            Research & PhD <br />
+            <span className="gradient-text-navy-blue">Entrance Test (RPET) 2026</span>
+          </h1>
+          
+          <p className="text-lg text-text-slate font-medium max-w-3xl leading-relaxed">
+            Begin your research journey at Rathinam Global University. Apply for admission into prestigious doctoral and research programmes through our comprehensive, merit-driven admission gateway.
+          </p>
 
-            <div className="flex flex-wrap gap-4 pt-2">
-              <button 
-                onClick={() => router.push('/register')}
-                className="px-8 py-4 rounded-xl bg-navy-950 text-[15px] font-extrabold text-white hover:bg-blue-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
-              >
-                Apply Now
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={handleDownloadBrochure}
-                className="px-8 py-4 rounded-xl border-2 border-navy-950 text-[15px] font-extrabold text-navy-950 hover:bg-surface-slate transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download Brochure
-              </button>
-            </div>
+          <div className="flex flex-wrap justify-center gap-4 pt-2">
+            <button 
+              onClick={() => router.push('/register')}
+              className="px-8 py-4 rounded-xl bg-navy-950 text-[15px] font-extrabold text-white hover:bg-blue-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+            >
+              Apply Now
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={handleDownloadBrochure}
+              className="px-8 py-4 rounded-xl border-2 border-navy-950 text-[15px] font-extrabold text-navy-950 hover:bg-surface-slate transition-all flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Brochure
+            </button>
+          </div>
 
-            {/* Statistics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-border-slate/60">
-              <div>
-                <p className="text-3xl font-outfit font-extrabold text-navy-950">20+</p>
-                <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Centres</p>
-              </div>
-              <div>
-                <p className="text-3xl font-outfit font-extrabold text-navy-950">120+</p>
-                <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Guides</p>
-              </div>
-              <div>
-                <p className="text-3xl font-outfit font-extrabold text-navy-950">500+</p>
-                <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Scholars</p>
-              </div>
-              <div>
-                <p className="text-3xl font-outfit font-extrabold text-navy-950">A++</p>
-                <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">NAAC Accredited</p>
-              </div>
+          {/* Statistics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-10 border-t border-border-slate/60 w-full max-w-4xl mt-6">
+            <div>
+              <p className="text-3xl font-outfit font-extrabold text-navy-950">20+</p>
+              <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Centres</p>
             </div>
-          </div>          {/* Right Column Logo Design */}
-          <div className="md:col-span-5 relative flex justify-center items-center">
-            <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full border border-border-slate/80 flex items-center justify-center relative bg-white/50 backdrop-blur-3xl shadow-sm">
-              <div className="w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full border border-dashed border-border-slate flex items-center justify-center" />
-              
-              {/* Inner Circle Logo container */}
-              <div className="absolute">
-                <Image src="/rgu-img.png" alt="RGU Logo" width={220} height={220} quality={100} className="object-contain drop-shadow-xl" />
-              </div>
+            <div>
+              <p className="text-3xl font-outfit font-extrabold text-navy-950">120+</p>
+              <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Guides</p>
+            </div>
+            <div>
+              <p className="text-3xl font-outfit font-extrabold text-navy-950">500+</p>
+              <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">Research Scholars</p>
+            </div>
+            <div>
+              <p className="text-3xl font-outfit font-extrabold text-navy-950">A++</p>
+              <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">NAAC Accredited</p>
             </div>
           </div>
 
