@@ -278,7 +278,7 @@ export default function LandingPage() {
       </section>
 
       {/* RGU PRESTIGE & ACCOLADES GRID SECTION */}
-      <section className="py-16 border-t border-b border-border-slate/85 bg-white/40 backdrop-blur-md relative">
+      <section id="about" className="py-16 border-t border-b border-border-slate/85 bg-white/40 backdrop-blur-md relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Prestige & Standings</h2>
@@ -403,7 +403,7 @@ export default function LandingPage() {
       </section>
 
       {/* ABOUT RATHINAM GLOBAL UNIVERSITY */}
-      <section id="about" className="py-20 border-t border-border-slate bg-white/70 backdrop-blur-md">
+      <section id="about-details" className="py-20 border-t border-border-slate bg-white/70 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">About Rathinam</h2>
