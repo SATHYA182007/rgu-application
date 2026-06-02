@@ -457,6 +457,20 @@ export default function RegistrationWizard() {
         toast.warning('Please complete all academic fields.');
         return false;
       }
+      const cgpaNum = parseFloat(academic.percentageCgpa as string);
+      if (isNaN(cgpaNum) || cgpaNum < 0) {
+        toast.warning('Please enter a valid numeric value for your score.');
+        return false;
+      }
+      const isCgpa = cgpaNum <= 10;
+      if (isCgpa && cgpaNum > 10) {
+        toast.warning('CGPA cannot exceed 10.00.');
+        return false;
+      }
+      if (!isCgpa && cgpaNum > 100) {
+        toast.warning('Percentage cannot exceed 100%.');
+        return false;
+      }
     } else if (step === 3) {
       if (!identity.nationality || !identity.category || !identity.proofNumber) {
         toast.warning('Please complete all identity verification fields.');
@@ -844,13 +858,33 @@ export default function RegistrationWizard() {
 
                     <div className="floating-label-group">
                       <input
-                        type="text"
+                        type="number"
                         placeholder=" "
                         value={academic.percentageCgpa}
-                        onChange={(e) => handleAcademicChange('percentageCgpa', e.target.value)}
+                        min={0}
+                        max={100}
+                        step="0.01"
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          const num = parseFloat(raw);
+                          // Detect mode: >10 → percentage (max 100), ≤10 → CGPA (max 10)
+                          const isCgpaMode = !isNaN(num) && num <= 10;
+                          const limit = isCgpaMode ? 10 : 100;
+                          if (!isNaN(num) && num > limit) return; // block if over limit
+                          handleAcademicChange('percentageCgpa', raw);
+                        }}
                         className="w-full premium-input font-semibold"
                       />
                       <label>Aggregate Percentage / CGPA Score</label>
+                      {/* Inline smart hint */}
+                      {academic.percentageCgpa !== '' && !isNaN(parseFloat(academic.percentageCgpa as string)) && (
+                        <p className="text-[10px] font-semibold mt-1 pl-1">
+                          {parseFloat(academic.percentageCgpa as string) <= 10
+                            ? <span className="text-blue-800">📊 Detected as <b>CGPA</b> — max allowed: <b>10.00</b></span>
+                            : <span className="text-gold-500">📈 Detected as <b>Percentage</b> — max allowed: <b>100.00%</b></span>
+                          }
+                        </p>
+                      )}
                     </div>
 
                     <div className="floating-label-group">

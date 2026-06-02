@@ -49,7 +49,7 @@ body {
   height: 56px;
   border-radius: 14px;
   border: 1px solid #E2E8F0;
-  padding: 0 18px;
+  padding: 18px 18px 0 18px;
   font-size: 15px;
   background-color: #FFFFFF;
   color: #0F172A;
@@ -119,11 +119,15 @@ select.premium-input {
   left: 18px;
   top: 50%;
   transform: translateY(-50%);
+  font-size: 15px;
+  font-weight: 500;
   background-color: #FFFFFF;
   padding: 0 4px;
   color: #64748B;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
   pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .floating-label-group input:focus ~ label,
@@ -131,8 +135,10 @@ select.premium-input {
 .floating-label-group select:focus ~ label,
 .floating-label-group select.has-value ~ label,
 .floating-label-group select:not([value=""]) ~ label {
-  top: 0;
-  font-size: 12px;
+  top: 10px;
+  transform: translateY(0);
+  font-size: 11px;
+  font-weight: 600;
   color: #1E4D8C;
 }
 

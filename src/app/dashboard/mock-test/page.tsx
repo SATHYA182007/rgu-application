@@ -26,7 +26,9 @@ import {
   BarChart2,
   HelpCircle,
   TrendingUp,
-  Flame
+  Flame,
+  ShieldAlert,
+  Maximize
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -606,11 +608,44 @@ export default function MockTestPlatform() {
   // Test taker states
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [timeLeft, setTimeLeft] = useState<number>(2400); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState<number>(2400);
   const [timeSpentSeconds, setTimeSpentSeconds] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Start timer on active state
+  const testContainerRef = useRef<HTMLDivElement>(null);
+
+  // Proctoring — use a ref so event-listener closures always see the latest value
+  const [malpracticeDetected, setMalpracticeDetected] = useState<boolean>(false);
+  const [malpracticeReason, setMalpracticeReason] = useState<string>('');
+  const malpracticeRef = useRef<boolean>(false);
+  const testActiveRef = useRef<boolean>(false); // tracks whether test is running
+
+  // ── Exit fullscreen helper (defined before effects that use it) ──
+  const exitFullscreen = () => {
+    try {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitFullscreenElement) {
+        (document as any).webkitExitFullscreen();
+      }
+    } catch (_) {}
+  };
+
+  // ── Malpractice terminator (defined before effects that use it) ──
+  const triggerMalpractice = (reason: string) => {
+    if (malpracticeRef.current) return; // already triggered — guard via ref not state
+    malpracticeRef.current = true;
+    setMalpracticeReason(reason);
+    setMalpracticeDetected(true);
+    if (timerRef.current) clearInterval(timerRef.current);
+    toast.error('⚠️ Malpractice detected! Test terminated.');
+    exitFullscreen();
+  };
+
+  // Keep a stable ref to triggerMalpractice so effects always call the latest version
+  const triggerMalpracticeRef = useRef(triggerMalpractice);
+  triggerMalpracticeRef.current = triggerMalpractice;
+
+  // ── Timer ───────────────────────────────────────────────────────
   useEffect(() => {
     if (testState === 'active') {
       timerRef.current = setInterval(() => {
@@ -627,15 +662,69 @@ export default function MockTestPlatform() {
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
     }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [testState]);
+
+  // ── PROCTORING: Tab / window visibility ─────────────────────────
+  useEffect(() => {
+    const handler = () => {
+      if (!testActiveRef.current) return;
+      if (document.hidden) {
+        triggerMalpracticeRef.current('Tab switch or window change detected during active test session.');
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  }, []); // mount once — uses refs for fresh values
+
+  // ── PROCTORING: Fullscreen exit ──────────────────────────────────
+  useEffect(() => {
+    const handler = () => {
+      if (!testActiveRef.current) return;
+      const fsEl =
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement;
+      if (!fsEl) {
+        triggerMalpracticeRef.current('Fullscreen mode was exited during the active test session.');
+      }
+    };
+    document.addEventListener('fullscreenchange', handler);
+    document.addEventListener('webkitfullscreenchange', handler);
+    document.addEventListener('mozfullscreenchange', handler);
+    return () => {
+      document.removeEventListener('fullscreenchange', handler);
+      document.removeEventListener('webkitfullscreenchange', handler);
+      document.removeEventListener('mozfullscreenchange', handler);
+    };
+  }, []); // mount once
 
   if (!activeUser) return null;
 
+  const confirmMalpracticeTermination = () => {
+    malpracticeRef.current = false;
+    testActiveRef.current = false;
+    setMalpracticeDetected(false);
+    setTestState('intro');
+    toast.error('Your mock test session has been terminated due to malpractice.');
+  };
+
   const handleStartTest = (testId: string) => {
+    // ① Request fullscreen FIRST — must be the very first thing in the user gesture
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen().catch(() => {
+        toast.warning('Fullscreen request blocked by browser. Please allow fullscreen access.');
+      });
+    } else if ((el as any).webkitRequestFullscreen) {
+      (el as any).webkitRequestFullscreen();
+    }
+
+    // ② Reset all state
+    malpracticeRef.current = false;
+    testActiveRef.current = true;
+    setMalpracticeDetected(false);
+    setMalpracticeReason('');
     setActiveTestId(testId);
     setAnswers({});
     setCurrentIdx(0);
@@ -644,6 +733,7 @@ export default function MockTestPlatform() {
     setTestState('active');
     toast.success('RPET Mock Test initialized. Go ahead!');
   };
+
 
   const handleSelectOption = (optIdx: number) => {
     setAnswers(prev => ({
@@ -670,7 +760,9 @@ export default function MockTestPlatform() {
   };
 
   const processScoreAndFinish = () => {
+    testActiveRef.current = false; // stop proctoring before exiting fullscreen
     if (timerRef.current) clearInterval(timerRef.current);
+    exitFullscreen();
 
     let rawScore = 0;
     const catScores = {
@@ -767,6 +859,13 @@ export default function MockTestPlatform() {
                 </div>
               </li>
               <li className="flex gap-3">
+                <ShieldAlert className="w-5 h-5 text-error-red shrink-0" />
+                <div>
+                  <p className="text-error-red font-bold">Proctored Fullscreen Session</p>
+                  <p className="text-[11px] font-medium leading-relaxed mt-0.5">The test runs in fullscreen mode. Switching tabs, minimizing the window, or exiting fullscreen will be detected as <strong>malpractice</strong> and the test will be immediately terminated.</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
                 <Flame className="w-5 h-5 text-blue-800 shrink-0" />
                 <div>
                   <p className="text-navy-950">Syllabus-Linked Diagnostic Analytics</p>
@@ -819,153 +918,176 @@ export default function MockTestPlatform() {
     );
   }
 
-  // Render Active test interface
+  // Render Active test interface — fixed overlay covers full screen
   if (testState === 'active') {
     return (
-      <div className="space-y-6">
-        
-        {/* Active Header bar with progress and timer */}
-        <div className="premium-glass border border-border-slate/90 p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-24 z-10 shadow-sm">
-          <div className="space-y-1 min-w-[200px]">
-            <div className="flex justify-between text-[11px] font-bold text-navy-950">
-              <span>Test Completion</span>
-              <span>{progressPercent}% ({totalAnswered}/20 Answered)</span>
+      <div
+        ref={testContainerRef}
+        className="fixed inset-0 z-[9998] bg-[#F8FAFC] overflow-y-auto"
+        style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+      >
+        {/* ── MALPRACTICE MODAL ─────────────────────────────────── */}
+        {malpracticeDetected && (
+          <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-5 border-2 border-error-red/40">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-error-red/10 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-6 h-6 text-error-red" />
+                </div>
+                <div>
+                  <h2 className="font-outfit font-black text-lg text-error-red leading-none">Malpractice Detected</h2>
+                  <p className="text-[10px] font-semibold text-text-slate mt-0.5">Test session terminated</p>
+                </div>
+              </div>
+              <div className="bg-error-red/5 border border-error-red/20 rounded-xl p-4">
+                <p className="text-xs font-semibold text-error-red leading-relaxed">{malpracticeReason}</p>
+              </div>
+              <p className="text-xs font-medium text-text-slate leading-relaxed">
+                Your mock test has been <strong>terminated</strong> due to a proctoring violation. Please restart the session and remain on this tab throughout the test.
+              </p>
+              <button
+                onClick={confirmMalpracticeTermination}
+                className="w-full py-3 rounded-xl bg-error-red hover:bg-error-red/90 text-white font-extrabold text-sm transition-all"
+              >
+                Acknowledge &amp; Exit Test
+              </button>
             </div>
-            <div className="h-1.5 w-full bg-border-slate rounded-full overflow-hidden mt-1">
-              <div className="h-full bg-blue-800 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+          </div>
+        )}
+
+        {/* Inner content — centered, max-width */}
+        <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+
+          {/* Top bar: logo + proctoring badge + timer */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-navy-950 text-white px-4 py-2 rounded-xl text-xs font-bold">
+                <ShieldAlert className="w-3.5 h-3.5 text-gold-500" />
+                PROCTORED SESSION
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-navy-950 text-white py-2.5 px-5 rounded-xl font-mono text-sm font-bold shadow-md">
+              <Clock className="w-4 h-4 text-gold-500 shrink-0" />
+              <span>Time Left: {formatTime(timeLeft)}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 bg-navy-950 text-white py-2.5 px-4 rounded-xl font-mono text-sm font-bold shadow-md self-end sm:self-center">
-            <Clock className="w-4 h-4 text-gold-500 shrink-0" />
-            <span>Time Left: {formatTime(timeLeft)}</span>
+          {/* Progress bar */}
+          <div className="bg-white border border-border-slate rounded-2xl p-4 flex items-center gap-6 shadow-sm">
+            <div className="flex-1 space-y-1">
+              <div className="flex justify-between text-[11px] font-bold text-navy-950">
+                <span>Test Completion</span>
+                <span>{progressPercent}% ({totalAnswered}/20 Answered)</span>
+              </div>
+              <div className="h-2 w-full bg-border-slate rounded-full overflow-hidden">
+                <div className="h-full bg-blue-800 rounded-full transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Question Panel Split */}
-        <div className="grid lg:grid-cols-12 gap-6 items-start">
-          
-          {/* Active Question Box - 8 cols */}
-          <div className="lg:col-span-8 premium-card bg-white border border-border-slate min-h-[420px] flex flex-col justify-between shadow-sm">
-            
-            <div className="space-y-6">
-              {/* Category indicator */}
-              <div className="flex items-center justify-between border-b border-border-slate/60 pb-4">
-                <span className="text-[10px] font-extrabold uppercase bg-gold-500/10 text-gold-500 border border-gold-500/20 px-3 py-1 rounded-full">
-                  {activeQ.topic}
-                </span>
-                <span className="text-xs font-bold text-text-slate">Question {currentIdx + 1} of 20</span>
+          {/* Question + Map grid */}
+          <div className="grid lg:grid-cols-12 gap-6 items-start">
+
+            {/* Active Question Box */}
+            <div className="lg:col-span-8 bg-white border border-border-slate rounded-2xl p-6 min-h-[420px] flex flex-col justify-between shadow-sm">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-border-slate/60 pb-4">
+                  <span className="text-[10px] font-extrabold uppercase bg-gold-500/10 text-gold-500 border border-gold-500/20 px-3 py-1 rounded-full">
+                    {activeQ.topic}
+                  </span>
+                  <span className="text-xs font-bold text-text-slate">Question {currentIdx + 1} of 20</span>
+                </div>
+
+                <h3 className="font-outfit font-bold text-base md:text-lg text-navy-950 leading-relaxed pt-2">
+                  {activeQ.q}
+                </h3>
+
+                <div className="grid gap-3 pt-2">
+                  {activeQ.options.map((opt, optIdx) => {
+                    const isSelected = answers[currentIdx] === optIdx;
+                    return (
+                      <button
+                        key={optIdx}
+                        onClick={() => handleSelectOption(optIdx)}
+                        className={`p-4 rounded-xl border text-left text-xs font-bold transition-all flex gap-3 items-center ${
+                          isSelected
+                            ? 'bg-navy-950/5 border-navy-950 text-navy-950'
+                            : 'bg-white border-border-slate hover:bg-surface-slate text-text-navy'
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${isSelected ? 'border-navy-950 bg-navy-950' : 'border-border-slate'}`}>
+                          {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                        <span className="leading-relaxed">{opt}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Question description */}
-              <h3 className="font-outfit font-bold text-base md:text-lg text-navy-950 leading-relaxed pt-2">
-                {activeQ.q}
-              </h3>
+              {/* Navigation */}
+              <div className="flex items-center justify-between pt-8 border-t border-border-slate/60 mt-12">
+                <button
+                  disabled={currentIdx === 0}
+                  onClick={handlePrev}
+                  className="px-5 py-3 border border-border-slate hover:bg-surface-slate rounded-xl text-xs font-bold text-navy-950 flex items-center gap-1.5 disabled:opacity-30 transition-all"
+                >
+                  <ChevronLeft className="w-4 h-4" /> Previous Question
+                </button>
+                {currentIdx < 19 ? (
+                  <button
+                    onClick={handleNext}
+                    className="px-6 py-3 bg-navy-950 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  >
+                    Next Question <ChevronRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={processScoreAndFinish}
+                    className="px-8 py-3 bg-success-green hover:bg-success-green/95 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-md"
+                  >
+                    Complete &amp; Submit Test
+                  </button>
+                )}
+              </div>
+            </div>
 
-              {/* Options list */}
-              <div className="grid gap-3 pt-2">
-                {activeQ.options.map((opt, optIdx) => {
-                  const isSelected = answers[currentIdx] === optIdx;
-
+            {/* Assessment Map */}
+            <div className="lg:col-span-4 bg-white border border-border-slate rounded-2xl p-6 space-y-6 shadow-sm">
+              <div className="border-b border-border-slate/60 pb-3 flex items-center justify-between">
+                <h4 className="font-outfit font-extrabold text-xs text-navy-950 uppercase tracking-wider">Assessment Map</h4>
+                <span className="text-[10px] font-bold text-text-slate">{totalAnswered}/20 Completed</span>
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {activeTestQuestions.map((q, idx) => {
+                  const isSelected = currentIdx === idx;
+                  const isAnswered = answers[idx] !== undefined;
                   return (
                     <button
-                      key={optIdx}
-                      onClick={() => handleSelectOption(optIdx)}
-                      className={`p-4 rounded-xl border text-left text-xs font-bold transition-all flex gap-3 items-center ${
-                        isSelected 
-                          ? 'bg-navy-950/5 border-navy-950 text-navy-950' 
-                          : 'bg-white border-border-slate hover:bg-surface-slate text-text-navy'
+                      key={idx}
+                      onClick={() => setCurrentIdx(idx)}
+                      className={`w-10 h-10 rounded-lg text-xs font-bold flex items-center justify-center transition-all ${
+                        isSelected
+                          ? 'bg-navy-950 text-white border-2 border-navy-950 shadow-sm'
+                          : isAnswered
+                          ? 'bg-success-green/10 text-success-green border border-success-green/20'
+                          : 'bg-bg-slate border border-border-slate text-text-slate hover:border-navy-950/20'
                       }`}
                     >
-                      <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${isSelected ? 'border-navy-950 bg-navy-950' : 'border-border-slate'}`}>
-                        {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
-                      </div>
-                      <span className="leading-relaxed">{opt}</span>
+                      {idx + 1}
                     </button>
                   );
                 })}
               </div>
-            </div>
-
-            {/* Navigation buttons */}
-            <div className="flex items-center justify-between pt-8 border-t border-border-slate/60 mt-12">
-              <button
-                disabled={currentIdx === 0}
-                onClick={handlePrev}
-                className="px-5 py-3 border border-border-slate hover:bg-surface-slate rounded-xl text-xs font-bold text-navy-950 flex items-center gap-1.5 disabled:opacity-30 disabled:hover:bg-transparent transition-all"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Previous Question
-              </button>
-
-              {currentIdx < 19 ? (
-                <button
-                  onClick={handleNext}
-                  className="px-6 py-3 bg-navy-950 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-                >
-                  Next Question
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button
-                  onClick={processScoreAndFinish}
-                  className="px-8 py-3 bg-success-green hover:bg-success-green/95 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-md"
-                >
-                  Complete & Submit Test
-                </button>
-              )}
+              <div className="pt-4 border-t border-border-slate/60 flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-bold text-text-slate">
+                <div className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-navy-950 rounded" /><span className="text-navy-950">Active</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-success-green/10 border border-success-green/20 rounded" /><span className="text-success-green">Answered</span></div>
+                <div className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-bg-slate border border-border-slate rounded" /><span>Unanswered</span></div>
+              </div>
             </div>
 
           </div>
-
-          {/* Quick-Jump Index panel - 4 cols */}
-          <div className="lg:col-span-4 premium-card bg-white border border-border-slate p-6 space-y-6 shadow-sm">
-            <div className="border-b border-border-slate/60 pb-3 flex items-center justify-between">
-              <h4 className="font-outfit font-extrabold text-xs text-navy-950 uppercase tracking-wider">Assessment Map</h4>
-              <span className="text-[10px] font-bold text-text-slate">{totalAnswered}/20 Completed</span>
-            </div>
-
-            <div className="grid grid-cols-5 gap-2">
-              {activeTestQuestions.map((q, idx) => {
-                const isSelected = currentIdx === idx;
-                const isAnswered = answers[idx] !== undefined;
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentIdx(idx)}
-                    className={`w-10 h-10 rounded-lg text-xs font-bold flex items-center justify-center transition-all ${
-                      isSelected 
-                        ? 'bg-navy-950 text-white border-2 border-navy-950 shadow-sm' 
-                        : isAnswered 
-                        ? 'bg-success-green/10 text-success-green border border-success-green/20' 
-                        : 'bg-bg-slate border border-border-slate text-text-slate hover:border-navy-950/20'
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="pt-4 border-t border-border-slate/60 flex flex-wrap gap-x-4 gap-y-2 text-[10px] font-bold text-text-slate">
-              <div className="flex items-center gap-1.5">
-                <div className="w-3.5 h-3.5 bg-navy-950 rounded" />
-                <span className="text-navy-950">Active</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3.5 h-3.5 bg-success-green/10 text-success-green border border-success-green/20 rounded" />
-                <span className="text-success-green">Answered</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3.5 h-3.5 bg-bg-slate border border-border-slate rounded" />
-                <span>Unanswered</span>
-              </div>
-            </div>
-          </div>
-
         </div>
-
       </div>
     );
   }
