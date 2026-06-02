@@ -170,10 +170,13 @@ export default function LandingPage() {
   ];
 
   return (
-    <div 
-      className="min-h-screen text-text-navy relative overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{ backgroundImage: "linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.95)), url('/rathinam.png')" }}
-    >
+    <div className="min-h-screen text-text-navy relative overflow-x-hidden">
+      
+      {/* Hardware-Accelerated background layer for 120FPS lag-free scrolling */}
+      <div 
+        className="fixed inset-0 z-[-10] bg-cover bg-center bg-no-repeat pointer-events-none"
+        style={{ backgroundImage: "linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.95)), url('/rathinam.png')" }}
+      />
       
       {/* Dynamic Background Gradients */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-800/5 blur-[120px] pointer-events-none" />
