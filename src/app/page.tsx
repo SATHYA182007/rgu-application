@@ -180,7 +180,7 @@ export default function LandingPage() {
       
       {/* Dynamic Background Gradients */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-800/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gold-500/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-[-10%] w-[50%] h-[50%] rounded-full bg-gold-500/5 blur-[120px] pointer-events-none" />
 
       {/* HEADER NAVBAR */}
       <header className="sticky top-0 z-40 premium-glass border-b border-border-slate/80 transition-all duration-300">
