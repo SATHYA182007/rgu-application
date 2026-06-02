@@ -170,7 +170,10 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-bg-slate text-text-navy relative overflow-hidden">
+    <div 
+      className="min-h-screen text-text-navy relative overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{ backgroundImage: "linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.95)), url('/rathinam.png')" }}
+    >
       
       {/* Dynamic Background Gradients */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-800/5 blur-[120px] pointer-events-none" />
@@ -324,7 +327,7 @@ export default function LandingPage() {
       </section>
 
       {/* ABOUT RATHINAM GLOBAL UNIVERSITY */}
-      <section id="about" className="py-20 border-t border-border-slate bg-white">
+      <section id="about" className="py-20 border-t border-border-slate bg-white/70 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">About Rathinam</h2>
@@ -371,7 +374,7 @@ export default function LandingPage() {
       </section>
 
       {/* RESEARCH DOMAINS */}
-      <section id="domains" className="py-20 bg-bg-slate">
+      <section id="domains" className="py-20 bg-bg-slate/40 border-t border-border-slate backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Research Domains</h2>
@@ -430,7 +433,7 @@ export default function LandingPage() {
       </section>
 
       {/* ADMISSION PROCESS */}
-      <section id="timeline" className="py-20 border-t border-border-slate bg-white">
+      <section id="timeline" className="py-20 border-t border-border-slate bg-white/70 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Admission Roadmap</h2>
@@ -470,7 +473,7 @@ export default function LandingPage() {
       </section>
 
       {/* IMPORTANT DATES */}
-      <section id="dates" className="py-20 bg-bg-slate border-t border-border-slate">
+      <section id="dates" className="py-20 bg-bg-slate/40 border-t border-border-slate backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Critical Dates</h2>
@@ -516,7 +519,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ SECTION */}
-      <section id="faq" className="py-20 bg-white border-t border-border-slate">
+      <section id="faq" className="py-20 bg-white/70 border-t border-border-slate backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Common Queries</h2>
