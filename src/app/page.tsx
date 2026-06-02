@@ -34,14 +34,85 @@ export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [loginTab, setLoginTab] = useState<'student' | 'admin'>('student');
+  const [achievementSet, setAchievementSet] = useState(0);
   
   // Form states
   const [studentEmail, setStudentEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
 
-  // Auto reset any active logins
+  // 9 Premium Accreditations & Achievements requested by user
+  const achievementSets = [
+    [
+      {
+        label: "Under UGC 2023",
+        value: "1st in TAMIL NADU",
+        icon: <CheckCircle className="w-5 h-5 text-blue-800" />,
+        bgIcon: "bg-blue-800/10 text-blue-800"
+      },
+      {
+        label: "QS I-Gauge",
+        value: "PLATINUM Rank",
+        icon: <Award className="w-5 h-5 text-gold-500" />,
+        bgIcon: "bg-gold-500/10 text-gold-500"
+      },
+      {
+        label: "NAAC",
+        value: "A++ Accredited",
+        icon: <Award className="w-5 h-5 text-success-green" />,
+        bgIcon: "bg-success-green/10 text-success-green"
+      }
+    ],
+    [
+      {
+        label: "NIRF Ranking",
+        value: "9TH Year in a Row",
+        icon: <Sparkles className="w-5 h-5 text-blue-800" />,
+        bgIcon: "bg-blue-800/10 text-blue-800"
+      },
+      {
+        label: "NIRF Innovation",
+        value: "TOP 50 In India",
+        icon: <Building className="w-5 h-5 text-gold-500" />,
+        bgIcon: "bg-gold-500/10 text-gold-500"
+      },
+      {
+        label: "Global Network",
+        value: "100+ Global Partners",
+        icon: <Users className="w-5 h-5 text-success-green" />,
+        bgIcon: "bg-success-green/10 text-success-green"
+      }
+    ],
+    [
+      {
+        label: "Global Reach",
+        value: "1000+ International Students",
+        icon: <Layers className="w-5 h-5 text-blue-800" />,
+        bgIcon: "bg-blue-800/10 text-blue-800"
+      },
+      {
+        label: "India's",
+        value: "FIRST Industry Integrated Institute",
+        icon: <GraduationCap className="w-5 h-5 text-gold-500" />,
+        bgIcon: "bg-gold-500/10 text-gold-500"
+      },
+      {
+        label: "In-Campus",
+        value: "ATAL Incubation Centre",
+        icon: <Sparkles className="w-5 h-5 text-success-green" />,
+        bgIcon: "bg-success-green/10 text-success-green"
+      }
+    ]
+  ];
+
+  // Auto reset any active logins and start the achievements rotation interval
   useEffect(() => {
     logout();
+
+    const interval = setInterval(() => {
+      setAchievementSet((prev) => (prev + 1) % 3);
+    }, 4500);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleStudentLogin = (e: React.FormEvent) => {
@@ -271,10 +342,8 @@ export default function LandingPage() {
                 <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">NAAC Accredited</p>
               </div>
             </div>
-          </div>
-
-          {/* Right Floating Elements Design */}
-          <div className="md:col-span-5 relative flex justify-center items-center">
+          </div>          {/* Right Floating Elements Design */}
+          <div className="md:col-span-5 relative flex flex-col items-center justify-center">
             <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full border border-border-slate/80 flex items-center justify-center relative bg-white/50 backdrop-blur-3xl shadow-sm">
               <div className="w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full border border-dashed border-border-slate flex items-center justify-center" />
               
@@ -284,42 +353,73 @@ export default function LandingPage() {
               </div>
 
               {/* Floating UI Elements */}
-              <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="absolute top-2 left-2 premium-card premium-shadow flex items-center gap-3 py-3.5 px-4 bg-white"
-              >
-                <div className="w-9 h-9 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-500">
-                  <Award className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-navy-950 leading-none">Top 50 NIRF</p>
-                  <p className="text-[10px] text-text-slate font-medium mt-1">National Ranking</p>
-                </div>
-              </motion.div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={achievementSet}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="absolute inset-0 pointer-events-none"
+                >
+                  {/* Card 1: Top Left */}
+                  <motion.div 
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                    className="absolute top-[-10px] left-[-35px] md:top-2 md:left-[-15px] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[230px]"
+                  >
+                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][0].bgIcon} flex items-center justify-center shrink-0`}>
+                      {achievementSets[achievementSet][0].icon}
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][0].label}</p>
+                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][0].value}</p>
+                    </div>
+                  </motion.div>
 
-              <motion.div 
-                animate={{ y: [0, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
-                className="absolute bottom-6 right-2 premium-card premium-shadow flex items-center gap-3 py-3.5 px-4 bg-white"
-              >
-                <div className="w-9 h-9 rounded-lg bg-success-green/10 flex items-center justify-center text-success-green">
-                  <CheckCircle className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-navy-950 leading-none">Verified Scholars</p>
-                  <p className="text-[10px] text-text-slate font-medium mt-1">International Journals</p>
-                </div>
-              </motion.div>
+                  {/* Card 2: Middle Right / Floating */}
+                  <motion.div 
+                    animate={{ scale: [1, 1.03, 1] }}
+                    transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+                    className="absolute right-[-45px] top-[30%] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[240px]"
+                  >
+                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][1].bgIcon} flex items-center justify-center shrink-0`}>
+                      {achievementSets[achievementSet][1].icon}
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][1].label}</p>
+                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][1].value}</p>
+                    </div>
+                  </motion.div>
 
-              <motion.div 
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                className="absolute right-[-10px] top-[20%] premium-card premium-shadow flex items-center gap-2.5 py-2 px-3 bg-white"
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-success-green animate-ping" />
-                <span className="text-[11px] font-bold text-navy-950">1,200+ Citations</span>
-              </motion.div>
+                  {/* Card 3: Bottom Left / Bottom Right */}
+                  <motion.div 
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 0.3 }}
+                    className="absolute bottom-[-15px] left-[10px] md:bottom-2 md:left-[40px] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[230px]"
+                  >
+                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][2].bgIcon} flex items-center justify-center shrink-0`}>
+                      {achievementSets[achievementSet][2].icon}
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][2].label}</p>
+                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][2].value}</p>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Premium Set Selector Toggles */}
+            <div className="flex gap-2.5 mt-8 items-center bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-border-slate/80 shadow-sm z-10">
+              {[0, 1, 2].map((idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setAchievementSet(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${achievementSet === idx ? 'w-8 bg-navy-950' : 'w-2.5 bg-border-slate hover:bg-text-slate'}`}
+                  aria-label={`Go to achievement set ${idx + 1}`}
+                />
+              ))}
             </div>
           </div>
 
