@@ -171,7 +171,7 @@ export default function LandingPage() {
 
   return (
     <div 
-      className="min-h-screen text-text-navy relative overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed"
+      className="min-h-screen text-text-navy relative overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: "linear-gradient(rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.95)), url('/rathinam.png')" }}
     >
       
@@ -182,13 +182,13 @@ export default function LandingPage() {
       {/* HEADER NAVBAR */}
       <header className="sticky top-0 z-40 premium-glass border-b border-border-slate/80 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <a href="#" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <Image src="/rgu-img.png" alt="RGU Logo" width={240} height={96} quality={100} className="object-contain h-12 w-auto" />
             <div className="h-6 w-[1px] bg-border-slate/80 mx-2" />
             <span className="font-outfit font-semibold text-xs tracking-wider bg-surface-slate text-blue-800 px-3 py-1.5 rounded-full border border-border-slate">
               RPET 2026
             </span>
-          </div>
+          </a>
 
           <nav className="hidden md:flex items-center gap-8 text-[14px] font-semibold text-text-slate">
             <a href="#about" className="hover:text-navy-950 transition-colors">About RGU</a>
