@@ -34,85 +34,14 @@ export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [loginTab, setLoginTab] = useState<'student' | 'admin'>('student');
-  const [achievementSet, setAchievementSet] = useState(0);
   
   // Form states
   const [studentEmail, setStudentEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
 
-  // 9 Premium Accreditations & Achievements requested by user
-  const achievementSets = [
-    [
-      {
-        label: "Under UGC 2023",
-        value: "1st in TAMIL NADU",
-        icon: <CheckCircle className="w-5 h-5 text-blue-800" />,
-        bgIcon: "bg-blue-800/10 text-blue-800"
-      },
-      {
-        label: "QS I-Gauge",
-        value: "PLATINUM Rank",
-        icon: <Award className="w-5 h-5 text-gold-500" />,
-        bgIcon: "bg-gold-500/10 text-gold-500"
-      },
-      {
-        label: "NAAC",
-        value: "A++ Accredited",
-        icon: <Award className="w-5 h-5 text-success-green" />,
-        bgIcon: "bg-success-green/10 text-success-green"
-      }
-    ],
-    [
-      {
-        label: "NIRF Ranking",
-        value: "9TH Year in a Row",
-        icon: <Sparkles className="w-5 h-5 text-blue-800" />,
-        bgIcon: "bg-blue-800/10 text-blue-800"
-      },
-      {
-        label: "NIRF Innovation",
-        value: "TOP 50 In India",
-        icon: <Building className="w-5 h-5 text-gold-500" />,
-        bgIcon: "bg-gold-500/10 text-gold-500"
-      },
-      {
-        label: "Global Network",
-        value: "100+ Global Partners",
-        icon: <Users className="w-5 h-5 text-success-green" />,
-        bgIcon: "bg-success-green/10 text-success-green"
-      }
-    ],
-    [
-      {
-        label: "Global Reach",
-        value: "1000+ International Students",
-        icon: <Layers className="w-5 h-5 text-blue-800" />,
-        bgIcon: "bg-blue-800/10 text-blue-800"
-      },
-      {
-        label: "India's",
-        value: "FIRST Industry Integrated Institute",
-        icon: <GraduationCap className="w-5 h-5 text-gold-500" />,
-        bgIcon: "bg-gold-500/10 text-gold-500"
-      },
-      {
-        label: "In-Campus",
-        value: "ATAL Incubation Centre",
-        icon: <Sparkles className="w-5 h-5 text-success-green" />,
-        bgIcon: "bg-success-green/10 text-success-green"
-      }
-    ]
-  ];
-
-  // Auto reset any active logins and start the achievements rotation interval
+  // Auto reset any active logins
   useEffect(() => {
     logout();
-
-    const interval = setInterval(() => {
-      setAchievementSet((prev) => (prev + 1) % 3);
-    }, 4500);
-
-    return () => clearInterval(interval);
   }, []);
 
   const handleStudentLogin = (e: React.FormEvent) => {
@@ -342,87 +271,143 @@ export default function LandingPage() {
                 <p className="text-xs font-semibold text-text-slate uppercase tracking-wider mt-1">NAAC Accredited</p>
               </div>
             </div>
-          </div>          {/* Right Floating Elements Design */}
-          <div className="md:col-span-5 relative flex flex-col items-center justify-center">
+          </div>          {/* Right Column Logo Design */}
+          <div className="md:col-span-5 relative flex justify-center items-center">
             <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full border border-border-slate/80 flex items-center justify-center relative bg-white/50 backdrop-blur-3xl shadow-sm">
               <div className="w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full border border-dashed border-border-slate flex items-center justify-center" />
               
               {/* Inner Circle Logo container */}
               <div className="absolute">
-                <Image src="/rgu-img.png" alt="RGU Logo" width={180} height={180} quality={100} className="object-contain drop-shadow-xl" />
+                <Image src="/rgu-img.png" alt="RGU Logo" width={220} height={220} quality={100} className="object-contain drop-shadow-xl" />
               </div>
-
-              {/* Floating UI Elements */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={achievementSet}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute inset-0 pointer-events-none"
-                >
-                  {/* Card 1: Top Left */}
-                  <motion.div 
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                    className="absolute top-[-10px] left-[-35px] md:top-2 md:left-[-15px] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[230px]"
-                  >
-                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][0].bgIcon} flex items-center justify-center shrink-0`}>
-                      {achievementSets[achievementSet][0].icon}
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][0].label}</p>
-                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][0].value}</p>
-                    </div>
-                  </motion.div>
-
-                  {/* Card 2: Middle Right / Floating */}
-                  <motion.div 
-                    animate={{ scale: [1, 1.03, 1] }}
-                    transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                    className="absolute right-[-45px] top-[30%] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[240px]"
-                  >
-                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][1].bgIcon} flex items-center justify-center shrink-0`}>
-                      {achievementSets[achievementSet][1].icon}
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][1].label}</p>
-                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][1].value}</p>
-                    </div>
-                  </motion.div>
-
-                  {/* Card 3: Bottom Left / Bottom Right */}
-                  <motion.div 
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 0.3 }}
-                    className="absolute bottom-[-15px] left-[10px] md:bottom-2 md:left-[40px] premium-card premium-shadow flex items-center gap-3 py-3 px-4 bg-white border border-border-slate/80 pointer-events-auto shrink-0 w-[230px]"
-                  >
-                    <div className={`w-9 h-9 rounded-lg ${achievementSets[achievementSet][2].bgIcon} flex items-center justify-center shrink-0`}>
-                      {achievementSets[achievementSet][2].icon}
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wide leading-none">{achievementSets[achievementSet][2].label}</p>
-                      <p className="text-xs font-black text-navy-950 mt-1.5 leading-tight">{achievementSets[achievementSet][2].value}</p>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Premium Set Selector Toggles */}
-            <div className="flex gap-2.5 mt-8 items-center bg-white/60 backdrop-blur-md px-4 py-2 rounded-full border border-border-slate/80 shadow-sm z-10">
-              {[0, 1, 2].map((idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setAchievementSet(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${achievementSet === idx ? 'w-8 bg-navy-950' : 'w-2.5 bg-border-slate hover:bg-text-slate'}`}
-                  aria-label={`Go to achievement set ${idx + 1}`}
-                />
-              ))}
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* RGU PRESTIGE & ACCOLADES GRID SECTION */}
+      <section className="py-16 border-t border-b border-border-slate/85 bg-white/40 backdrop-blur-md relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
+            <h2 className="text-xs font-bold tracking-widest text-gold-500 uppercase">Prestige & Standings</h2>
+            <h3 className="text-2xl md:text-3xl font-outfit font-extrabold text-navy-950">
+              National Recognitions & Global Benchmarks
+            </h3>
+            <p className="text-text-slate font-medium text-sm leading-relaxed">
+              Rathinam Global University is consistently recognized by top national bodies and international ranking systems for academic, research, and innovation leadership.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* UGC */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-blue-800/10 flex items-center justify-center text-blue-800 shrink-0">
+                <CheckCircle className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">Under UGC 2023</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">1st in TAMIL NADU</h4>
+                <p className="text-xs text-text-slate">Approved and verified state-wide leader</p>
+              </div>
+            </div>
+
+            {/* QS I-Gauge */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-500 shrink-0">
+                <Award className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">QS I-Gauge</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">PLATINUM Rank</h4>
+                <p className="text-xs text-text-slate">Global benchmark for elite education standards</p>
+              </div>
+            </div>
+
+            {/* NAAC */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-success-green/10 flex items-center justify-center text-success-green shrink-0">
+                <Award className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">NAAC</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">A++ Accredited</h4>
+                <p className="text-xs text-text-slate">Highest possible grade awarded by national panel</p>
+              </div>
+            </div>
+
+            {/* NIRF Ranking */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-blue-800/10 flex items-center justify-center text-blue-800 shrink-0">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">NIRF Ranking</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">9TH Year in a Row</h4>
+                <p className="text-xs text-text-slate">Sustained performance in top tier listings</p>
+              </div>
+            </div>
+
+            {/* NIRF Innovation */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-500 shrink-0">
+                <Building className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">NIRF Innovation</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">TOP 50 In India</h4>
+                <p className="text-xs text-text-slate">Recognized for commercialization & research impact</p>
+              </div>
+            </div>
+
+            {/* Global Network */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-success-green/10 flex items-center justify-center text-success-green shrink-0">
+                <Users className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">Global Network</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">100+ Global Partners</h4>
+                <p className="text-xs text-text-slate">Active foreign exchange and joint studies</p>
+              </div>
+            </div>
+
+            {/* Global Reach */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-blue-800/10 flex items-center justify-center text-blue-800 shrink-0">
+                <Layers className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">Global Reach</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">1000+ International Students</h4>
+                <p className="text-xs text-text-slate">Vibrant cosmopolitan multicultural campus</p>
+              </div>
+            </div>
+
+            {/* India's */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-500 shrink-0">
+                <GraduationCap className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">India's</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">FIRST Industry Integrated Institute</h4>
+                <p className="text-xs text-text-slate">Co-designed academic programs with global tech leads</p>
+              </div>
+            </div>
+
+            {/* In-Campus */}
+            <div className="premium-card premium-shadow-hover bg-white/95 border border-border-slate/70 flex items-start gap-4 p-6 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-success-green/10 flex items-center justify-center text-success-green shrink-0">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-text-slate font-extrabold uppercase tracking-wider">In-Campus</p>
+                <h4 className="text-[15px] font-black text-navy-950 font-outfit leading-tight">ATAL Incubation Centre</h4>
+                <p className="text-xs text-text-slate">Govt-funded startup launchpad and seed funding</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
