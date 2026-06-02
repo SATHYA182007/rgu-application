@@ -12,8 +12,9 @@ import {
   CandidateDocuments,
   CandidateSlotBookingInfo
 } from '../types';
+import { supabase } from '../lib/supabase';
 
-// Pre-seeded candidates for realistic database display
+// Pre-seeded candidates for realistic database display / local fallbacks
 const INITIAL_CANDIDATES: CandidateApplication[] = [
   {
     id: 'RPET2026-000108',
@@ -197,123 +198,6 @@ const INITIAL_CANDIDATES: CandidateApplication[] = [
     },
     otpVerified: true,
     verificationNotes: 'Applicant uploaded low resolution documents and incomplete marksheets. Status set to Rejected.'
-  },
-  {
-    id: 'RPET2026-000112',
-    status: 'Approved',
-    progressPercent: 100,
-    registrationDate: '2026-05-22',
-    personalInfo: {
-      firstName: 'Aditya',
-      lastName: 'Nair',
-      dob: '1998-09-30',
-      gender: 'Male',
-      mobile: '+91 99988 87776',
-      email: 'aditya.nair@gmail.com'
-    },
-    academicInfo: {
-      highestQualification: 'M.Sc Data Science',
-      percentageCgpa: '9.5 CGPA',
-      schoolFaculty: 'School of Computer Sciences',
-      researchDepartment: 'Data Science',
-      proposedResearchArea: 'Federated Learning in Healthcare Diagnostics'
-    },
-    identityInfo: {
-      nationality: 'Indian',
-      aadhaarId: '5432-1098-7654',
-      category: 'General'
-    },
-    documents: {
-      passportPhoto: { name: 'photo_aditya.png', url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', status: 'Verified' },
-      aadhaarCard: { name: 'aadhaar_card.pdf', url: '#', status: 'Verified' },
-      degreeCertificate: { name: 'msc_degree.pdf', url: '#', status: 'Verified' },
-      markSheets: { name: 'all_marks.pdf', url: '#', status: 'Verified' },
-      researchProposal: { name: 'proposal_federated.pdf', url: '#', status: 'Verified' }
-    },
-    otpVerified: true,
-    bookedSlot: {
-      bookingId: 'BOOK-2026-000112',
-      date: '2026-08-15',
-      time: '11:00 AM – 01:00 PM',
-      mode: 'Online Proctored',
-      rescheduleCount: 0,
-      bookingHistory: []
-    },
-    mockTestResult: {
-      score: 19,
-      accuracy: 95,
-      timeTaken: '32:15',
-      attemptDate: '2026-05-29',
-      categoryScores: { researchAptitude: 5, logicalReasoning: 5, quantitativeAptitude: 5, english: 4 }
-    }
-  },
-  {
-    id: 'RPET2026-000113',
-    status: 'Pending',
-    progressPercent: 100,
-    registrationDate: '2026-05-25',
-    personalInfo: {
-      firstName: 'Meera',
-      lastName: 'Deshmukh',
-      dob: '1997-03-18',
-      gender: 'Female',
-      mobile: '+91 88877 76665',
-      email: 'meera.d@gmail.com'
-    },
-    academicInfo: {
-      highestQualification: 'M.Com',
-      percentageCgpa: '82%',
-      schoolFaculty: 'School of Commerce & Management',
-      researchDepartment: 'Commerce',
-      proposedResearchArea: 'GST Compliance Impacts on Micro Enterprises'
-    },
-    identityInfo: {
-      nationality: 'Indian',
-      aadhaarId: '9898-7676-5454',
-      category: 'OBC'
-    },
-    documents: {
-      passportPhoto: { name: 'meera.jpg', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150', status: 'Pending' },
-      aadhaarCard: { name: 'aadhaar.pdf', url: '#', status: 'Pending' },
-      degreeCertificate: { name: 'mcom.pdf', url: '#', status: 'Pending' },
-      markSheets: { name: 'sheets.pdf', url: '#', status: 'Pending' },
-      researchProposal: { name: 'proposal.pdf', url: '#', status: 'Pending' }
-    },
-    otpVerified: true
-  },
-  {
-    id: 'RPET2026-000114',
-    status: 'Pending',
-    progressPercent: 100,
-    registrationDate: '2026-05-26',
-    personalInfo: {
-      firstName: 'Sai',
-      lastName: 'Prasad',
-      dob: '1995-12-12',
-      gender: 'Male',
-      mobile: '+91 77766 65554',
-      email: 'sai.prasad@gmail.com'
-    },
-    academicInfo: {
-      highestQualification: 'M.Tech Electronics',
-      percentageCgpa: '8.4 CGPA',
-      schoolFaculty: 'School of Engineering & Technology',
-      researchDepartment: 'Engineering',
-      proposedResearchArea: 'VLSI Architectures for Neuromorphic Chips'
-    },
-    identityInfo: {
-      nationality: 'Indian',
-      aadhaarId: '4444-5555-6666',
-      category: 'ST'
-    },
-    documents: {
-      passportPhoto: { name: 'sai_photo.jpg', url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', status: 'Pending' },
-      aadhaarCard: { name: 'aadhaar.pdf', url: '#', status: 'Pending' },
-      degreeCertificate: { name: 'mtech.pdf', url: '#', status: 'Pending' },
-      markSheets: { name: 'marks.pdf', url: '#', status: 'Pending' },
-      researchProposal: { name: 'proposal.pdf', url: '#', status: 'Pending' }
-    },
-    otpVerified: true
   }
 ];
 
@@ -336,6 +220,41 @@ const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
   }
 ];
 
+// Helper to map DB record values to Frontend camelCase types
+const mapDBCandidateToState = (db: any): CandidateApplication => ({
+  id: db.id,
+  status: db.status,
+  progressPercent: db.progress_percent,
+  registrationDate: db.registration_date,
+  otpVerified: db.otp_verified,
+  verificationNotes: db.verification_notes || '',
+  personalInfo: db.personal_info || {},
+  academicInfo: db.academic_info || {},
+  identityInfo: db.identity_info || {},
+  documents: db.documents || {},
+  bookedSlot: db.booked_slot || null,
+  mockTestResult: db.mock_test_result || null,
+  mockTestResults: db.mock_test_results || {}
+});
+
+// Helper to map Frontend camelCase type keys to DB snake_case columns
+const mapStateToDBCandidate = (state: CandidateApplication): any => ({
+  id: state.id,
+  email: state.personalInfo?.email || '',
+  status: state.status,
+  progress_percent: state.progressPercent,
+  registration_date: state.registrationDate,
+  otp_verified: state.otpVerified,
+  verification_notes: state.verificationNotes || null,
+  personal_info: state.personalInfo || {},
+  academic_info: state.academicInfo || {},
+  identity_info: state.identityInfo || {},
+  documents: state.documents || {},
+  booked_slot: state.bookedSlot || null,
+  mock_test_result: state.mockTestResult || null,
+  mock_test_results: state.mockTestResults || {}
+});
+
 export function usePortalState() {
   const [candidates, setCandidates] = useState<CandidateApplication[]>([]);
   const [activeUser, setActiveUser] = useState<CandidateApplication | null>(null);
@@ -343,62 +262,121 @@ export function usePortalState() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Sync with localStorage on load
+  // Sync with Supabase on load, with localStorage as local replication fallback
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedCandidates = localStorage.getItem('rgu_rpet_candidates');
-      if (storedCandidates) {
-        setCandidates(JSON.parse(storedCandidates));
-      } else {
-        localStorage.setItem('rgu_rpet_candidates', JSON.stringify(INITIAL_CANDIDATES));
-        setCandidates(INITIAL_CANDIDATES);
-      }
+    async function initPortalData() {
+      try {
+        setLoading(true);
 
-      const storedUser = localStorage.getItem('rgu_rpet_active_user');
-      if (storedUser) {
-        setActiveUser(JSON.parse(storedUser));
-      }
+        // 1. Fetch Candidates from Supabase
+        const { data: dbCandidates, error: candError } = await supabase
+          .from('candidates')
+          .select('*');
 
-      const storedAdmin = localStorage.getItem('rgu_rpet_admin_logged');
-      if (storedAdmin) {
-        setAdminLoggedIn(JSON.parse(storedAdmin));
-      }
+        let loadedCandidates: CandidateApplication[] = [];
+        
+        if (!candError && dbCandidates && dbCandidates.length > 0) {
+          loadedCandidates = dbCandidates.map(mapDBCandidateToState);
+          setCandidates(loadedCandidates);
+          localStorage.setItem('rgu_rpet_candidates', JSON.stringify(loadedCandidates));
+        } else {
+          // Fallback to local replicates
+          const storedCandidates = localStorage.getItem('rgu_rpet_candidates');
+          if (storedCandidates) {
+            loadedCandidates = JSON.parse(storedCandidates);
+            setCandidates(loadedCandidates);
+          } else {
+            localStorage.setItem('rgu_rpet_candidates', JSON.stringify(INITIAL_CANDIDATES));
+            setCandidates(INITIAL_CANDIDATES);
+            loadedCandidates = INITIAL_CANDIDATES;
+          }
+        }
 
-      const storedNotifications = localStorage.getItem('rgu_rpet_notifications');
-      if (storedNotifications) {
-        setNotifications(JSON.parse(storedNotifications));
-      } else {
-        localStorage.setItem('rgu_rpet_notifications', JSON.stringify(DEFAULT_NOTIFICATIONS));
-        setNotifications(DEFAULT_NOTIFICATIONS);
-      }
+        // 2. Fetch Notifications from Supabase
+        const { data: dbNotifs, error: notifError } = await supabase
+          .from('notifications')
+          .select('*');
 
-      setLoading(false);
+        if (!notifError && dbNotifs && dbNotifs.length > 0) {
+          const loadedNotifs: NotificationItem[] = dbNotifs.map((n: any) => ({
+            id: n.id,
+            title: n.title,
+            description: n.description,
+            timestamp: n.timestamp,
+            read: n.read,
+            type: n.type as any
+          }));
+          setNotifications(loadedNotifs);
+          localStorage.setItem('rgu_rpet_notifications', JSON.stringify(loadedNotifs));
+        } else {
+          const storedNotifications = localStorage.getItem('rgu_rpet_notifications');
+          if (storedNotifications) {
+            setNotifications(JSON.parse(storedNotifications));
+          } else {
+            localStorage.setItem('rgu_rpet_notifications', JSON.stringify(DEFAULT_NOTIFICATIONS));
+            setNotifications(DEFAULT_NOTIFICATIONS);
+          }
+        }
+
+        // 3. Hydrate Active User Session
+        const storedUser = localStorage.getItem('rgu_rpet_active_user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          const freshUser = loadedCandidates.find(c => c.id === parsedUser.id);
+          if (freshUser) {
+            setActiveUser(freshUser);
+            localStorage.setItem('rgu_rpet_active_user', JSON.stringify(freshUser));
+          } else {
+            setActiveUser(parsedUser);
+          }
+        }
+
+        const storedAdmin = localStorage.getItem('rgu_rpet_admin_logged');
+        if (storedAdmin) {
+          setAdminLoggedIn(JSON.parse(storedAdmin));
+        }
+
+      } catch (err) {
+        console.warn('Supabase initial fetch bypassed. Operational locally.', err);
+      } finally {
+        setLoading(false);
+      }
     }
+
+    initPortalData();
   }, []);
 
-  // Sync candidates with localStorage when changed
+  // Sync candidate lists with LocalStorage
   const saveCandidatesState = (newCandidates: CandidateApplication[]) => {
     setCandidates(newCandidates);
     localStorage.setItem('rgu_rpet_candidates', JSON.stringify(newCandidates));
   };
 
-  // Sync active user with localStorage when changed
-  const saveActiveUserState = (user: CandidateApplication | null) => {
+  // Sync active user sessions with LocalStorage and execute async write to live Supabase DB
+  const saveActiveUserState = async (user: CandidateApplication | null) => {
     setActiveUser(user);
     if (user) {
       localStorage.setItem('rgu_rpet_active_user', JSON.stringify(user));
-      // update active user in candidate list as well
       const updatedList = candidates.map(c => c.id === user.id ? user : c);
       saveCandidatesState(updatedList);
+
+      // Async write to Supabase
+      try {
+        const dbCandidate = mapStateToDBCandidate(user);
+        await supabase
+          .from('candidates')
+          .upsert(dbCandidate);
+      } catch (e) {
+        console.warn('Database write queued locally.', e);
+      }
     } else {
       localStorage.removeItem('rgu_rpet_active_user');
     }
   };
 
-  // Login dynamic functions
+  // Login handlers
   const loginAsStudent = (email: string, appNumber?: string): boolean => {
     const cleanEmail = email.toLowerCase().trim();
-    // Search candidates by email (or application number if provided)
     const match = candidates.find(
       c => c.personalInfo.email.toLowerCase() === cleanEmail || (appNumber && c.id === appNumber.trim())
     );
@@ -430,7 +408,7 @@ export function usePortalState() {
     localStorage.setItem('rgu_rpet_admin_logged', 'false');
   };
 
-  // Register new candidate / Save drafts
+  // Save drafts / Registration inputs
   const saveDraftApplication = (
     personal: Partial<PersonalInfo>,
     academic: Partial<AcademicInfo>,
@@ -439,7 +417,7 @@ export function usePortalState() {
     progress: number
   ) => {
     const draftUser: CandidateApplication = {
-      id: activeUser?.id || `RPET-2026-${Math.floor(10000 + Math.random() * 90000)}`,
+      id: activeUser?.id || `RPET2026-${Math.floor(100000 + Math.random() * 900000)}`,
       status: 'Draft',
       progressPercent: progress,
       registrationDate: activeUser?.registrationDate || new Date().toISOString().split('T')[0],
@@ -486,14 +464,13 @@ export function usePortalState() {
 
     saveActiveUserState(draftUser);
 
-    // If candidate isn't in main database list, add it
     if (!candidates.find(c => c.id === draftUser.id)) {
       saveCandidatesState([...candidates, draftUser]);
     }
   };
 
   // Submit complete application
-  const submitApplication = (appId: string) => {
+  const submitApplication = async (appId: string) => {
     const match = candidates.find(c => c.id === appId);
     if (match) {
       const updatedUser: CandidateApplication = {
@@ -512,13 +489,30 @@ export function usePortalState() {
         read: false,
         type: 'success'
       };
+
+      try {
+        await supabase
+          .from('notifications')
+          .insert({
+            id: newNotif.id,
+            candidate_id: appId,
+            title: newNotif.title,
+            description: newNotif.description,
+            timestamp: newNotif.timestamp,
+            read: newNotif.read,
+            type: newNotif.type
+          });
+      } catch (e) {
+        console.warn('Database write bypass.', e);
+      }
+
       const updatedNotifs = [newNotif, ...notifications];
       setNotifications(updatedNotifs);
       localStorage.setItem('rgu_rpet_notifications', JSON.stringify(updatedNotifs));
     }
   };
 
-  // OTP Validation lock
+  // OTP Verification complete status
   const verifyOTPCode = (appId: string): boolean => {
     const match = candidates.find(c => c.id === appId);
     if (match) {
@@ -532,8 +526,8 @@ export function usePortalState() {
     return false;
   };
 
-  // Slot Booking engine
-  const bookSlot = (appId: string, booking: CandidateSlotBookingInfo) => {
+  // Exam timeslot booking
+  const bookSlot = async (appId: string, booking: CandidateSlotBookingInfo) => {
     const match = candidates.find(c => c.id === appId);
     if (match) {
       const updatedUser: CandidateApplication = {
@@ -552,14 +546,31 @@ export function usePortalState() {
         read: false,
         type: 'info'
       };
+
+      try {
+        await supabase
+          .from('notifications')
+          .insert({
+            id: newNotif.id,
+            candidate_id: appId,
+            title: newNotif.title,
+            description: newNotif.description,
+            timestamp: newNotif.timestamp,
+            read: newNotif.read,
+            type: newNotif.type
+          });
+      } catch (e) {
+        console.warn('Database write bypass.', e);
+      }
+
       const updatedNotifs = [newNotif, ...notifications];
       setNotifications(updatedNotifs);
       localStorage.setItem('rgu_rpet_notifications', JSON.stringify(updatedNotifs));
     }
   };
 
-  // Mock test submission
-  const saveMockTestScore = (appId: string, result: MockTestResult, testId?: string) => {
+  // Mock test assessment submissions
+  const saveMockTestScore = async (appId: string, result: MockTestResult, testId?: string) => {
     const match = candidates.find(c => c.id === appId);
     if (match) {
       const activeTestKey = testId || 'test1';
@@ -582,14 +593,31 @@ export function usePortalState() {
         read: false,
         type: 'success'
       };
+
+      try {
+        await supabase
+          .from('notifications')
+          .insert({
+            id: newNotif.id,
+            candidate_id: appId,
+            title: newNotif.title,
+            description: newNotif.description,
+            timestamp: newNotif.timestamp,
+            read: newNotif.read,
+            type: newNotif.type
+          });
+      } catch (e) {
+        console.warn('Database write bypass.', e);
+      }
+
       const updatedNotifs = [newNotif, ...notifications];
       setNotifications(updatedNotifs);
       localStorage.setItem('rgu_rpet_notifications', JSON.stringify(updatedNotifs));
     }
   };
 
-  // Administrative verification
-  const adminVerifyApplication = (
+  // Administrative candidate auditing & verification
+  const adminVerifyApplication = async (
     appId: string,
     status: ApplicationStatus,
     docStatuses?: Partial<Record<keyof CandidateDocuments, 'Verified' | 'Rejected' | 'Pending'>>,
@@ -610,19 +638,32 @@ export function usePortalState() {
           });
         }
 
-        return {
+        const updated = {
           ...candidate,
           status,
           documents: updatedDocs,
           verificationNotes: notes || candidate.verificationNotes
         };
+
+        // Async write to Supabase
+        try {
+          const dbCandidate = mapStateToDBCandidate(updated);
+          supabase
+            .from('candidates')
+            .upsert(dbCandidate)
+            .then(() => {});
+        } catch (e) {
+          console.warn('Database write bypass.', e);
+        }
+
+        return updated;
       }
       return candidate;
     });
 
     saveCandidatesState(updatedCandidates);
 
-    // If the verified user is currently logged in, update active user session
+    // If verified user session is active, refresh activeUser state
     if (activeUser && activeUser.id === appId) {
       const matchedUpdated = updatedCandidates.find(c => c.id === appId);
       if (matchedUpdated) {
@@ -630,7 +671,7 @@ export function usePortalState() {
       }
     }
 
-    // Add administrative notice notification
+    // Add administrative status notice update
     const newNotif: NotificationItem = {
       id: `notif-${Date.now()}`,
       title: `Application Status Update: ${status}`,
@@ -639,16 +680,42 @@ export function usePortalState() {
       read: false,
       type: status === 'Approved' ? 'success' : status === 'Rejected' ? 'error' : 'warning'
     };
+
+    try {
+      await supabase
+        .from('notifications')
+        .insert({
+          id: newNotif.id,
+          candidate_id: appId,
+          title: newNotif.title,
+          description: newNotif.description,
+          timestamp: newNotif.timestamp,
+          read: newNotif.read,
+          type: newNotif.type
+        });
+    } catch (e) {
+      console.warn('Database write bypass.', e);
+    }
+
     const updatedNotifs = [newNotif, ...notifications];
     setNotifications(updatedNotifs);
     localStorage.setItem('rgu_rpet_notifications', JSON.stringify(updatedNotifs));
   };
 
-  // Clear notification read statuses
-  const markNotificationsAsRead = () => {
+  // Mark all notification items as read
+  const markNotificationsAsRead = async () => {
     const updated = notifications.map(n => ({ ...n, read: true }));
     setNotifications(updated);
     localStorage.setItem('rgu_rpet_notifications', JSON.stringify(updated));
+
+    try {
+      await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('read', false);
+    } catch (e) {
+      console.warn('Database write bypass.', e);
+    }
   };
 
   return {
